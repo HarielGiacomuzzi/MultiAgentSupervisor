@@ -79,3 +79,17 @@ def test_run_stream_emits_sse_events():
 def test_run_stream_llm_failure_ends_with_error_event():
     events = read_sse(client_with(failing_llm), {"task": "x"})
     assert events[-1] == {"type": "error", "message": "RuntimeError: boom"}
+
+
+def test_index_serves_chat_ui():
+    r = TestClient(app).get("/")
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/html")
+    assert 'id="task-form"' in r.text
+    assert 'data-agent="supervisor"' in r.text
+
+
+def test_static_assets_are_served():
+    client = TestClient(app)
+    for path in ("/static/app.js", "/static/sse.js", "/static/styles.css"):
+        assert client.get(path).status_code == 200, path

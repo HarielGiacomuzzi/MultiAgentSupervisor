@@ -1,16 +1,26 @@
 """HTTP API for the multi-agent research assistant. Run: uvicorn main:app --reload"""
 import json
 import os
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, StringConstraints
 
 from app import llm as claude, mock_llm
 from app.orchestrator import LLM, run_task
 
 app = FastAPI(title="Multi-Agent Supervisor")
+
+STATIC_DIR = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+@app.get("/", include_in_schema=False)
+def index():
+    return FileResponse(STATIC_DIR / "index.html")
 
 
 class RunRequest(BaseModel):
