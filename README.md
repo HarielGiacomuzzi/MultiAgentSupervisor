@@ -141,6 +141,11 @@ render.yaml          Render deployment blueprint
 3. When prompted, set `ANTHROPIC_API_KEY`.
 4. Once it's live, open the service URL and paste it into the **Live demo** line above.
 
+> **Cost warning:** the deployed app has no authentication or rate limiting, so anyone with
+> the URL can start runs (up to 10 iterations on Opus) billed to your API key. Set a monthly
+> spend limit in the [Anthropic Console](https://console.anthropic.com/), and for a public
+> demo consider keeping the URL private or deploying with `MOCK_LLM=1`.
+
 ## Extension ideas
 
 Parallel workers, human-in-the-loop approval, persistent memory across tasks, more workers (Editor, Fact-Checker), and web search for the Researcher via Claude's server-side web search tool.
