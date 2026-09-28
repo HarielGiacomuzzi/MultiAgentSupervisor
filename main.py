@@ -1,12 +1,13 @@
 """HTTP API for the multi-agent research assistant. Run: uvicorn main:app --reload"""
 import json
+import os
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, StringConstraints
 
-from app import llm as claude
+from app import llm as claude, mock_llm
 from app.orchestrator import LLM, run_task
 
 app = FastAPI(title="Multi-Agent Supervisor")
@@ -18,7 +19,7 @@ class RunRequest(BaseModel):
 
 
 def get_llm() -> LLM:
-    return claude.complete
+    return mock_llm.complete if os.environ.get("MOCK_LLM") == "1" else claude.complete
 
 
 @app.get("/health")
